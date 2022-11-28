@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -16,8 +17,10 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -45,7 +48,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in sydney"));
+        Marker markerSidney = mMap.addMarker(
+                new MarkerOptions().
+                        position(sydney).
+                        title("Marker in sydney")
+                        .snippet("Ahora mismo no estamos aquí") //agrega un texto más largo
+                        .draggable(true) //puede moverse de su posición el marcador
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location))//le damos un color al marcador
+                        .flat(false)
+        );
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
