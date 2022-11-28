@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,7 +24,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerDragListener {
 
     //esta variable es para el mapa normal
     private GoogleMap mMap;
@@ -47,6 +48,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+
+        //click sobre el mapa
+        mMap.setOnMapClickListener(this);
+
+        //eventos markers
+        mMap.setOnMarkerDragListener(this);
+
         LatLng sydney = new LatLng(-34, 151);
         Marker markerSidney = mMap.addMarker(
                 new MarkerOptions().
@@ -76,6 +84,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         // Position the map's camera near Sydney, Australia.
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-34, 151)));
+    }
+
+    @Override
+    public void onMapClick(@NonNull LatLng latLng) {
+        mMap.addMarker(
+                new MarkerOptions().position(latLng)
+                        .title("Nuevo marker")
+                        .draggable(true)
+        );
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    @Override
+    public void onMarkerDrag(@NonNull Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(@NonNull Marker marker) {
+        LatLng posicion = marker.getPosition();
+        marker.setSnippet(posicion.latitude+", "+ posicion.longitude);
+        marker.showInfoWindow();
+    }
+
+    @Override
+    public void onMarkerDragStart(@NonNull Marker marker) {
+        marker.hideInfoWindow();
     }
 
     //este método igual es de street view
